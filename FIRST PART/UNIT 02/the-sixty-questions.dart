@@ -176,10 +176,30 @@ void main() {
   print("---\n---");
 
   //Question #22: Given a collection of numbers, determine whether all its elements are greater than zero.
+   print("question 22");
+  print("initial list: ");
+  print(list_i);
+  print((list_i.where((n)=>n>0).length==list_i.length)?'Todos los números son mayores que 0':'No todos los números son mayores que 0');
+  print("---\n---");
 
   //Question #23: Given a collection of numbers, determine whether none of them is equal to zero.
+  print("question 23");
+  print("initial list: ");
+  print(list_i);
+  print((list_i.where((n)=>n==0).length==list_i.length>0)?'No todos son iguales a 0':'Todos son 0');
+  print("---\n---");
+
 
   //Question #24: Given a collection of numbers, find the first even number. If there is none, return a result representing the absence of a value.
+
+  print("question 24");
+  print("initial list: ");
+  print(list_i);
+  print((list_i.where((n)=>n%2==0)).firstOrNull ?? 'Ausencia de valor');
+  var list_i2 = [1,3,5];
+  print((list_i2.where((n)=>n%2==0)).firstOrNull ?? 'Ausencia de valor');
+  print("---\n---");
+
 
   //Question #25: Given a collection of words and a specific word, determine whether that word is present in the collection.
 
