@@ -1,11 +1,12 @@
 void main() {
   //Question #1: Given a collection of integers, obtain a new collection containing only the even numbers.
-  List<dynamic> list_i = [
+  List<int> list_i = [
     1,
     2,
     3,
     4,
   ];
+  List<int> list_i2;
   print("question 01");
   print("initial list: ");
   print(list_i);
@@ -180,13 +181,20 @@ void main() {
   print("initial list: ");
   print(list_i);
   print((list_i.where((n)=>n>0).length==list_i.length)?'Todos los números son mayores que 0':'No todos los números son mayores que 0');
+  list_i2 = [3,4,5];
+  print(list_i2);
+  print((list_i2.where((n)=>n>0).length==list_i2.length)?'Todos los números son mayores que 0':'No todos los números son mayores que 0');
   print("---\n---");
 
   //Question #23: Given a collection of numbers, determine whether none of them is equal to zero.
   print("question 23");
   print("initial list: ");
+
   print(list_i);
-  print((list_i.where((n)=>n==0).length==list_i.length>0)?'No todos son iguales a 0':'Todos son 0');
+  print(list_i.where((n)=>n==0).length == list_i.length ? 'Todos son 0':'No todos son 0');
+  list_i2 = [0,0,0];
+  print(list_i2);
+  print(list_i2.where((n)=>n==0).length == list_i2.length ? 'Todos son 0':'No todos son 0');
   print("---\n---");
 
 
@@ -195,9 +203,10 @@ void main() {
   print("question 24");
   print("initial list: ");
   print(list_i);
-  print((list_i.where((n)=>n%2==0)).firstOrNull ?? 'Ausencia de valor');
-  var list_i2 = [1,3,5];
-  print((list_i2.where((n)=>n%2==0)).firstOrNull ?? 'Ausencia de valor');
+  print((list_i.where((n)=>n%2==0)).firstOrNull ?? 'No hay pares');
+  list_i2 = [1,3,5];
+  print(list_i2);
+  print((list_i2.where((n)=>n%2==0)).firstOrNull ?? 'No hay pares');
   print("---\n---");
 
 
