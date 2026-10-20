@@ -65,9 +65,9 @@ For example, a button or static text that does not change and can be declared as
 
 An important difference between these two types is that stateful widgets can *redraw* themselves whenever their state changes, whereas stateless widgets cannot do so on their own.
 
-**Note**
-
-There is a third type of widget: inherited widgets (*InheritedWidget*), which allow data to be shared among the components contained within them. We will cover this type of widget later.
+> **Note**
+>
+> There is a third type of widget: inherited widgets (*InheritedWidget*), which allow data to be shared among the components contained within them. We will cover this type of widget later.
 
 ## The Widget Tree
 
