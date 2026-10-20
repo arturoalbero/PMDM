@@ -4,7 +4,7 @@ Traditional user interface development has been based on an imperative style, in
 
 In contrast to this approach, the declarative paradigm, which has been present in programming since the 1950s, proposes a higher level of abstraction and focuses on *what* rather than *how*. When applied to interface design, the idea is to focus on *describing* the *current* state of the interface, leaving it to the framework to render that state and handle the transitions between states. In other words, the user interface is generated based on the state we want to represent:
 
-[Interface as a function of state. Source: esflutter.dev, licensed under CC BY 4.0](https://joamuran.net/flutter2026/u3/img/ui-equals-function-of-state.png)
+![Interface as a function of state. Source: esflutter.dev, licensed under CC BY 4.0](https://joamuran.net/flutter2026/u3/img/ui-equals-function-of-state.png)
 
 The current trend toward declarative user interface development emerged with frameworks such as *React*, which introduced JSX files, where JavaScript code and HTML coexist. Later, *Flutter* came into the picture at Google I/O in 2017. This shift has also reached native Android development with *Jetpack Compose* and *composable* interfaces, iOS with *SwiftUI*, and even environments such as Unity, with *UIWidget*.
 
