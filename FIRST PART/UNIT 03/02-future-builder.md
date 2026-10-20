@@ -1,5 +1,7 @@
 # 2. Asynchronous Operations with FutureBuilder
 
+> **ACTIVITY:** Read the following text and experiment with the different examples in order to achieve knowledge and practical skills about the FutureBuilder.
+
 Nowadays, applications—whether desktop applications, but especially mobile applications—are heavily integrated with the cloud and use multiple Internet services for various purposes, such as retrieving information or managing persistence. Working with the cloud means that applications must be prepared to operate in asynchronous environments, where a response to a request is not immediate.
 
 Modern applications are expected to behave smoothly, without giving users the impression that they are frozen, and to allow interaction while waiting for a response.
@@ -100,6 +102,62 @@ You can see the complete example in this Gist:
 
 https://dartpad.dev/?id=c6595a08fe6bd74f99bef457173c898c
 
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+// Definim la funció funcioAsíncrona que retorna
+// Un Future que es resol a un String al cap de 3 segons
+
+Future<String> funcioAsincrona() {
+  return Future.delayed(const Duration(seconds: 3), () {
+    debugPrint("Estem en funcioAsincrona");
+    return 'Valor de retorn';
+  });
+}
+
+// Giny principal
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Exemple amb FutureBuilder',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exemple amb FutureBuilder'),
+        ),
+        body: const Center(
+          child: GinyAsincron(),
+        ),
+      ),
+    );
+  }
+}
+
+// Aquest giny es construirà en base a un 
+// FutureBuilder vingulat a la funció asíncrona.
+
+class GinyAsincron extends StatelessWidget {
+  const GinyAsincron({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: funcioAsincrona(),
+      initialData: "Esperant resposta...",
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        String text = "";
+        if (snapshot.hasData) text = snapshot.data.toString();
+        return Text(text);
+      },
+    );
+  }
+}
+```
+
 ## Best Practices for FutureBuilder
 
 A widget's `build()` method can execute many times during the application's lifetime.
@@ -169,6 +227,71 @@ return FutureBuilder(
 You can see both examples in this Gist:
 
 https://dartpad.dev/?id=94020e31698e730523da2ec9b236fb8a
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+// Definim la funció funcioAsíncrona que retorna
+// Un Future que es resol a un String al cap de 3 segons
+
+Future<String> funcioAsincrona() {
+  return Future.delayed(const Duration(seconds: 3), () {
+    debugPrint("Estem en funcioAsincrona");
+    return 'Valor de retorn';
+  });
+}
+
+// Giny principal
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Exemple amb FutureBuilder',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exemple amb FutureBuilder'),
+        ),
+        body: const GinyAsincron(),
+      ),
+    );
+  }
+}
+
+class GinyAsincron extends StatelessWidget {
+  const GinyAsincron({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: funcioAsincrona(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return Center(child: Text(snapshot.data.toString()));
+        }
+        // Exemple 1: Mosta l'indicador de progrés circular
+        // centrat en la pantalla, i dins un SizedBox,
+        // per fer-lo més gran.
+        // Comenteu aquestes línies per provar l'exemple 2
+        return const Center(
+          child: SizedBox(
+            height: 200,
+            width: 200,
+            child: CircularProgressIndicator(),
+          ),
+        );
+
+        // Exemple 2 ( Descomentar )
+        // Indicador de progrés linial, que es mostra
+        // a la part superior del body
+        // return const LinearProgressIndicator();
+      },
+    );
+  }
+}
+```
 
 ## ConnectionState
 
@@ -217,6 +340,67 @@ If we replace the future assignment with `future: null`—by uncommenting that l
 You can try it in the following Gist:
 
 https://dartpad.dev/?id=01078c2d8163205d5195a54f625921a6
+
+```dart 
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+// Definim la funció funcioAsíncrona que retorna
+// Un Future que es resol a un String al cap de 3 segons
+
+Future<String> funcioAsincrona() {
+  return Future.delayed(const Duration(seconds: 3), () {
+    debugPrint("Estem en funcioAsincrona");
+    return 'Valor de retorn';
+  });
+}
+
+// Giny principal
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Exemple amb FutureBuilder',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exemple amb FutureBuilder'),
+        ),
+        body: const GinyAsincron(),
+      ),
+    );
+  }
+}
+
+class GinyAsincron extends StatelessWidget {
+  const GinyAsincron({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      //future: null,
+      future: funcioAsincrona(), // Comentar per provar la línia de dalt
+      initialData: "Valor inicial",
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        String text = "";
+        if (snapshot.connectionState == ConnectionState.none) {
+          text = "Estat ConnectionState.none.\n Data=${snapshot.data.toString()}";
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          text = "Estat ConnectionState.Waiting.\n Esperant resposta...";
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          text = "Estat ConnectionState.done.\nData=${snapshot.data.toString()}";
+        }
+
+        return Center(
+          child: Text(text),
+        );
+      },
+    );
+  }
+}
+```
 
 ## Managing Futures with StatefulWidget
 
@@ -291,6 +475,77 @@ In this example:
 You can view the example in this Gist:
 
 https://dartpad.dev/?id=9c7c099f1a87b5216783777390d69ccf
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+// Definim la funció funcioAsíncrona que retorna
+// Un Future que es resol a un String al cap de 3 segons
+
+Future<String> funcioAsincrona() {
+  return Future.delayed(const Duration(seconds: 3), () {
+    debugPrint("Estem en funcioAsincrona");
+    return 'Valor de retorn';
+  });
+}
+
+// Giny principal
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Exemple amb FutureBuilder',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exemple amb FutureBuilder'),
+        ),
+        body: const Center(
+          child: GinyAsincron(),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class GinyAsincron extends StatefulWidget {
+  const GinyAsincron({super.key});
+
+  @override
+  State<GinyAsincron> createState() => _GinyAsincronState();
+}
+
+class _GinyAsincronState extends State<GinyAsincron> {
+  late final Future<String> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = funcioAsincrona(); // Es crea una sola vegada
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Esperant resposta...");
+        }
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        }
+        return Text(snapshot.data ?? "");
+      },
+    );
+  }
+}
+```
 
 ## Reloading a Future in a Controlled Way
 
