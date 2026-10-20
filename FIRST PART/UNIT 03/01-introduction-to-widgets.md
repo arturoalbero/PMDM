@@ -148,7 +148,7 @@ In the first unit, we saw how to create a Flutter project using both VS Code and
     - *Project Name*: *hola_mon* (Remember that, like any Dart project, it cannot contain uppercase letters, but it can contain the `_` symbol.)
   - If we check the output for the `hola_mon` project in VS Code, we will see that the following command has been executed:
 
-    [Output of the Flutter: New Project command](https://joamuran.net/flutter2026/u3/img/create_project.png)
+    ![Output of the Flutter: New Project command](https://joamuran.net/flutter2026/u3/img/create_project.png)
 
   - What we have done is invoke the command `flutter create --template app --overwrite .` to create the project and download its dependencies using `flutter pub get`. The output also tells us where the source code of our application will be located: `Your application code is in ./lib/main.dart.`
 
@@ -197,19 +197,19 @@ Remember that in the first unit we also learned how to run Flutter applications,
 
 To select the device on which to run the application, open the Command Palette with `Ctrl+Shift+P` and search for the *Flutter: Select Device* command. This lets us choose a device. In addition, the bottom-right corner of the VS Code window displays the currently selected default device and allows us to change it.
 
-[Default device](https://joamuran.net/flutter2026/u3/img/selectDevice1.png)
+![Default device](https://joamuran.net/flutter2026/u3/img/selectDevice1.png)
 
-[Device selection](https://joamuran.net/flutter2026/u3/img/selectDevice2.png)
+![Device selection](https://joamuran.net/flutter2026/u3/img/selectDevice2.png)
 
 Once we have selected a device, we can run and debug the application by pressing `F5`.
 
-**Warning!**
-
-Keep in mind that the first time you run a project on a particular platform, Flutter must download and install all the native libraries required by that platform. Consequently, the first run will take a little longer.
+> **Warning!**
+>
+> Keep in mind that the first time you run a project on a particular platform, Flutter must download and install all the native libraries required by that platform. Consequently, the first run will take a little longer.
 
 Once the application is running, we can tell that it is being debugged because debugging buttons appear at the top, the status bar turns red, and the Debug panel and Debug Console become active on the right-hand side.
 
-[Debugging view](https://joamuran.net/flutter2026/u3/img/depuracio.png)
+![Debugging view](https://joamuran.net/flutter2026/u3/img/depuracio.png)
 
 To stop debugging, click the *Stop* button, represented by a rectangle with a red outline in the top toolbar.
 
@@ -269,23 +269,23 @@ This program works as follows:
 - Inside `main`, we call `runApp`, which is responsible for running the Flutter application.
 - The `runApp` function receives a single argument: a `Widget` object, which becomes the application's main widget and the widget that must be rendered. In this case, it is a `Text` widget containing the text *Hello World* (its first positional argument), displayed from left to right (the optional named argument `textDirection`, set to `TextDirection.ltr`). Without this named argument, Flutter produces the following error because it does not know how to render the text:
 
-[Rendering error](https://joamuran.net/flutter2026/u3/img/error_text_direction.png)
+![Rendering error](https://joamuran.net/flutter2026/u3/img/error_text_direction.png)
 
 **Constant Widgets**
 
 Notice that the `Text` widget has been declared as a constant using `const`. If we do not do this, we will see the warning *Prefer const with constant constructors*.
 
-In Flutter, widgets that will not change during execution should generally be declared as constants. In this case, the text is created directly from a string. Declaring it as a constant tells Flutter that the widget, or subtree of widgets, does not need to be reconstructed, improving rendering efficiency.
+In Flutter, **widgets that will not change during execution should generally be declared as constants**. In this case, the text is created directly from a string. Declaring it as a constant tells Flutter that the widget, or subtree of widgets, does not need to be reconstructed, improving rendering efficiency.
 
 Our application displays *Hello World* in the upper-left corner. Therefore, when we run it on a mobile device, the text appears below the system notification bar.
 
-[Text positioned in the upper-left corner](https://joamuran.net/flutter2026/u3/img/holaMon1.png)
+![Text positioned in the upper-left corner](https://joamuran.net/flutter2026/u3/img/holaMon1.png)
 
 On some mobile devices, depending on the notification bar configuration, the text might not even be visible.
 
 To center the text, we will place it inside a `Center` widget. We can do this manually or **use the code actions provided by the Flutter extension for VS Code**. To display these actions, click the yellow light bulb that appears next to the line containing the `Text` widget, or place the cursor over the widget and press `Ctrl`+`.`.
 
-[Code actions](https://joamuran.net/flutter2026/u3/img/holaMon2.png)
+![Code actions](https://joamuran.net/flutter2026/u3/img/holaMon2.png)
 
 As you can see, the *More Actions* section lets us wrap (*Wrap*) the widget in another container widget.
 
@@ -293,7 +293,7 @@ As you can see, the *More Actions* section lets us wrap (*Wrap*) the widget in a
 
 On Ubuntu 22.04 and derivatives, the `Ctrl`+`.` keyboard shortcut is used by IBus to access emojis. As a result, you might see an underlined `e` instead of the menu. If this happens, run `ibus-setup` in a terminal and change the keyboard shortcuts in the Emoji tab.
 
-[IBus configuration](https://joamuran.net/flutter2026/u3/img/2/ibus.png)
+![IBus configuration](https://joamuran.net/flutter2026/u3/img/2/ibus.png)
 
 Once the code actions menu is open, select *Wrap with Center*. The resulting code will be:
 
@@ -337,7 +337,7 @@ With this change, the text will be centered on the screen.
 
 You can see a summary of this process in the following animation:
 
-[Centering the text. This is an animated GIF available in the online version only](https://joamuran.net/flutter2026/u3/img/2/wrapWithCenter.gif)
+![Centering the text. This is an animated GIF available in the online version only](https://joamuran.net/flutter2026/u3/img/2/wrapWithCenter.gif)
 
 ### Creating Our Own Widget
 
@@ -355,13 +355,13 @@ class MyApp extends StatelessWidget {}
 
 As it stands, this class declaration produces the error `non_abstract_class_inherits_abstract_member`. To read the error description, hover the mouse pointer over it. A window similar to the following will appear:
 
-[Inspecting the error](https://joamuran.net/flutter2026/u3/img/2/error_build.png)
+![Inspecting the error](https://joamuran.net/flutter2026/u3/img/2/error_build.png)
 
 As we can see, the message tells us that when we extend `StatelessWidget`, we must provide an implementation of the `build` method.
 
 If we select the *Quick Fix* option, a dialog will appear with the possible corrections. Select the first option, *Create 1 missing Override*.
 
-[Quick fix for errors](https://joamuran.net/flutter2026/u3/img/2/error_build_quickFix.png)
+![Quick fix for errors](https://joamuran.net/flutter2026/u3/img/2/error_build_quickFix.png)
 
 The generated code will be:
 
@@ -439,11 +439,11 @@ Notice that creating an instance of `MyApp` only requires calling its constructo
 
 We have now created our first custom widget class and used it as the application's main widget. However, a warning still appears on the `MyApp` class. If we hover over it, we will see the message *Use key in widget constructors*.
 
-[Warning: Use Key in Widget Constructors](https://joamuran.net/flutter2026/u3/img/2/warningKey.png)
+![Warning: Use Key in Widget Constructors](https://joamuran.net/flutter2026/u3/img/2/warningKey.png)
 
 If we accept the *Add key to constructors* quick fix:
 
-[Quick fix for Use Key in Widget Constructors](https://joamuran.net/flutter2026/u3/img/2/warningKey_2.png)
+![Quick fix for Use Key in Widget Constructors](https://joamuran.net/flutter2026/u3/img/2/warningKey_2.png)
 
 A constructor with an optional key will be generated for our widget:
 
@@ -501,11 +501,11 @@ void main() {
 
 Place the cursor over the `Center` widget. The light bulb for code actions will appear on the left. Click it (or press `Ctrl`+`.`) and select *Extract Widget* from the contextual menu.
 
-[Extracting a widget](https://joamuran.net/flutter2026/u3/img/extractWidget.png)
+![Extracting a widget](https://joamuran.net/flutter2026/u3/img/extractWidget.png)
 
 A dialog will appear asking for the widget's name. Enter `MyApp`:
 
-[Extracting a widget](https://joamuran.net/flutter2026/u3/img/extractWidget2.png)
+![Extracting a widget](https://joamuran.net/flutter2026/u3/img/extractWidget2.png)
 
 The code will be generated automatically. We only need to add `const` before `MyApp`:
 
@@ -535,7 +535,7 @@ class MyApp extends StatelessWidget {
 
 You can see this process in the following animation:
 
-[Extracting a widget. This animated GIF is available in the online version only](https://joamuran.net/flutter2026/u3/img/2/ExtractWidget.gif)
+![Extracting a widget. This animated GIF is available in the online version only](https://joamuran.net/flutter2026/u3/img/2/ExtractWidget.gif)
 
 ### Creating Custom Widgets with Parameters
 
@@ -555,7 +555,7 @@ class ElMeuGinyPersonalitzat extends StatelessWidget {
 }
 ```
 
-Notice that `propietatText` is declared as `final`, allowing us to define the constructor as constant and thereby improve rendering efficiency. If this property could change in the future, we could not declare it as `final`, and the constructor could not be declared as `const`.
+Notice that `propietatText` is declared as `final`, allowing us to define the constructor as constant and **thereby improve rendering efficiency.** If this property could change in the future, we could not declare it as `final`, and the constructor could not be declared as `const`.
 
 Also notice that `propietatText` is initialized directly in the constructor using the simplified syntax, as a named argument alongside the widget's key (`key`). The key is added automatically when the widget is generated from snippets. Although it is possible to remove the key from the constructor, Flutter always recommends using one.
 
@@ -610,7 +610,7 @@ Among the different properties of `MaterialApp`, we should highlight the followi
 
 The *Flutter Snippets* extension includes a snippet for generating a basic Material application. If we delete our existing code and type the abbreviation `mateapp`, we can select this snippet:
 
-[The `mateapp` snippet](https://joamuran.net/flutter2026/u3/img/mateappSnippet.png)
+![The `mateapp` snippet](https://joamuran.net/flutter2026/u3/img/mateappSnippet.png)
 
 It will generate the application's entire skeleton:
 
@@ -641,7 +641,7 @@ class MyApp extends StatelessWidget {
 
 Let's see this process in an animation:
 
-[Snippet for creating a Material application](https://joamuran.net/flutter2026/u3/img/2/mateapp.gif)
+![Snippet for creating a Material application](https://joamuran.net/flutter2026/u3/img/2/mateapp.gif)
 
 ### The `Scaffold` Widget
 
@@ -685,7 +685,7 @@ class MyApp extends StatelessWidget {
 
 When we launch the application, we will see how its appearance changes:
 
-[Hello World with Material](https://joamuran.net/flutter2026/u3/img/2/mateappHola.png)
+![Hello World with Material](https://joamuran.net/flutter2026/u3/img/2/mateappHola.png)
 
 As you can see, the *Debug* label appears in the upper-right corner. To hide it, we can use the `debugShowCheckedModeBanner` parameter of the `MaterialApp` widget as follows:
 
@@ -798,7 +798,7 @@ We will now add a `Column` container inside the `Center` widget we already have,
 
 To do this, place the cursor over the text again, click the light bulb to display the contextual menu, and select *Wrap with Column*. This will add the `Column` widget with its `children` property, initialized with a list containing the existing `Text` widget.
 
-[Wrapping Text with Column](https://joamuran.net/flutter2026/u3/img/2/wrapColumn.png)
+![Wrapping Text with Column](https://joamuran.net/flutter2026/u3/img/2/wrapColumn.png)
 
 Now we only need to modify the first text and add a second one to display the counter value. The code would look like this:
 
@@ -821,11 +821,11 @@ However, if we want the different arguments or elements to appear on separate li
 
 You can see this visually in the following animation:
 
-[Trailing commas](https://joamuran.net/flutter2026/u3/img/2/comma.gif)
+![Trailing commas](https://joamuran.net/flutter2026/u3/img/2/comma.gif)
 
 This code displays the two texts vertically in a column, but perhaps not where we intended: they appear at the top of the screen.
 
-[Code result](https://joamuran.net/flutter2026/u3/img/2/comptador_1.png)
+![Code result](https://joamuran.net/flutter2026/u3/img/2/comptador_1.png)
 
 This happens because the column widget is centered but occupies all the available space inside the `Center` widget. Within that space, it stacks its children from top to bottom.
 
@@ -844,7 +844,7 @@ Column(
 
 These values have the following visual effects:
 
-[Values of MainAxisAlignment](https://joamuran.net/flutter2026/u3/img/2/MainAxisAlignment.png)
+![Values of MainAxisAlignment](https://joamuran.net/flutter2026/u3/img/2/MainAxisAlignment.png)
 
 ### Modifying Text Properties
 
@@ -964,7 +964,7 @@ Before modifying our code, let's examine the structure of a stateful widget.
 
 The `statefulW` snippet provides a basic template for these widgets, which we can customize with the desired name. The following animation shows how to use it:
 
-[Animation showing the use of the StatefulW snippet](https://joamuran.net/flutter2026/u3/img/2/myWidget.gif)
+![Animation showing the use of the StatefulW snippet](https://joamuran.net/flutter2026/u3/img/2/myWidget.gif)
 
 After renaming the widget to `MyWidget`, the resulting code is:
 
@@ -995,7 +995,7 @@ Let's modify our code. We can use a code action to convert a stateless widget in
 
 Place the cursor over the `HomeScreen` class declaration and click the light bulb that appears beside it, or press `Ctrl`+`.`. The following option will appear:
 
-[Converting a widget to Stateful](https://joamuran.net/flutter2026/u3/img/convertStateful.png)
+![Converting a widget to Stateful](https://joamuran.net/flutter2026/u3/img/convertStateful.png)
 
 Apply this change and **add the counter as a property of the class itself**, rather than defining it inside the `build` method:
 
@@ -1063,12 +1063,12 @@ Although we have not yet explored widgets in depth, we have learned several usef
 - Adding a floating action button and implementing its functionality.
 - Understanding the difference between *Stateless* and *Stateful* widgets and how to define state.
 
-**Optional Exercise**
-
-To check that you understand these concepts and can work with Flutter UIs, try the following exercise:
-
-**Add another button to decrement the counter and another button to reset its value to 0.**
-
-- **Hints for the solution:**
-  - The `floatingActionButton` property of `Scaffold` does not necessarily have to contain a `FloatingActionButton`. It can contain, for example, a `Row` or `Column` container, inside which we can place several buttons.
-  - If you want to change the position of the `floatingActionButton` component, you can use the `floatingActionButtonLocation` property of `Scaffold`. Its possible values are available under `FloatingActionButtonLocation.*`.
+> **ACTIVITY:**
+>
+> To check that you understand these concepts and can work with Flutter UIs, try the following exercise:
+>
+> **Add another button to decrement the counter and another button to reset its value to 0.**
+> 
+>- **Hints for the solution:**
+>  - The `floatingActionButton` property of `Scaffold` does not necessarily have to contain a `FloatingActionButton`. It can contain, for example, a `Row` or `Column` container, inside which we can place several buttons.
+>  - If you want to change the position of the `floatingActionButton` component, you can use the `floatingActionButtonLocation` property of `Scaffold`. Its possible values are available under `FloatingActionButtonLocation.*`.
