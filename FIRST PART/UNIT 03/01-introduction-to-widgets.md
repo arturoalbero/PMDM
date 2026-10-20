@@ -75,7 +75,7 @@ As mentioned above, the widgets in an application can be composed to form a hier
 
 As an example, let's look at the code for a basic interface consisting of an application bar, a central body, and a floating action button, along with the execution result and the corresponding widget tree:
 
-[Basic interface example](https://joamuran.net/flutter2026/u3/img/mateapp.png)
+![Basic interface example](https://joamuran.net/flutter2026/u3/img/mateapp.png)
 
 Without going into details that we will cover later, we can see that the main widget, and the root of the widget tree, is a `MaterialApp` widget. Within it, the `home` property defines another widget of type `Scaffold`, which in turn has three child nodes: the `AppBar` widget in the `appBar` property; the container-type `Center` widget in the `body` property; and the `FloatingActionButton` widget in the `floatingActionButton` property. These last nodes also have child nodes of type `Text` or `Icon`.
 
@@ -86,6 +86,35 @@ One of the most complex aspects of working with Flutter is managing information 
 You can find the working code in the following *gist*:
 
 - [https://dartpad.dev/embed-flutter.html?id=9ea7b34384268a68e11cb8750eecf9b0](https://dartpad.dev/embed-flutter.html?id=9ea7b34384268a68e11cb8750eecf9b0)
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App Material',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Barra d\'aplicació',
+          ),
+        ),
+        body: const Center(
+          child: Text('Hola Món'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
+```
 
 [Embedded DartPad example](https://dartpad.dev/embed-flutter.html?id=9ea7b34384268a68e11cb8750eecf9b0)
 
