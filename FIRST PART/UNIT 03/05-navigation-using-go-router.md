@@ -1,4 +1,6 @@
-## 3. Navigator 2
+# Advanced forms of Navigation: Navigator 2 and GoRouter
+
+## Navigator 2
 
 ### Introduction to Navigator 2
 
@@ -61,7 +63,7 @@ All of this can be done manually, but it is quite a lot of work. That is why ext
 
 ---
 
-## 4. Navigation with GoRouter
+## Navigation with GoRouter
 
 ### Go Router
 
@@ -430,7 +432,7 @@ Let's look at the example from the previous section with two screens and the det
 
 ---
 
-## 5. Hero Animations
+## Hero Animations
 
 ### What are Hero Animations?
 

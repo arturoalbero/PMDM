@@ -1,4 +1,4 @@
-# 1 Introduction. Declarative and Imperative Interfaces
+# Introduction. Declarative and Imperative Interfaces
 
 Traditional user interface development has been based on an imperative style, in which we define what we want to be represented in the interface and how we want to do it. In desktop, web, and mobile applications, we typically specify the user interface using XML-based files (pure XML, HTML, QML, etc.), which must then be transformed into manipulable elements and somehow linked to the application code.
 
@@ -51,7 +51,7 @@ You can find more information about the topics covered here in the following art
 - [*Flutter: La imposición del Declarative UI o UI as Code*](https://medium.com/comunidad-flutter/flutter-la-imposici%C3%B3n-del-declarative-ui-o-del-ui-as-code-5e5ec099ba84), on Medium (in Spanish).
 - [*Imperative vs. declarative programming: Google Jetpack Compose*](https://www2.deloitte.com/es/es/blog/todo-tecnologia/2021/programacion-imperativa-vs-declarativa-google-jetpack-compose.html), on Deloitte (in Spanish).
 
-# 2 Concepts
+# Concepts
 
 ## Widgets
 
@@ -131,7 +131,7 @@ These three trees work together to build the UI: the widget tree defines what we
 
 You can learn more about these three trees in the video [*How Flutter Works: The Three Trees* by #DecodingFlutter](https://www.youtube.com/watch?v=xiW3ahr4CRU).
 
-# 3. Getting Started: From Hello World to the Counter
+# Getting Started: From Hello World to the Counter
 
 Let's move on to creating our first *Flutter* project. We'll start with a simple *Hello World* application and see how we can gradually add widgets until we turn it into an application that manages a simple click counter, similar to Flutter's example app.
 

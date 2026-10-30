@@ -1,4 +1,4 @@
-# 5.1. Navigation
+# Navigation
 
 Applications, whether mobile, web, or desktop, generally use multiple screens or views that users can navigate between and share information across.
 
@@ -422,7 +422,7 @@ You can see the complete example in this Gist:
 
 https://dartpad.dev/?id=e00d0a209437630e98997fb52271dff4
 
-## Named Routes
+## OPTIONAL -> Named Routes
 
 > **Warning**
 >

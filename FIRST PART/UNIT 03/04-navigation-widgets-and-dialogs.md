@@ -1,4 +1,4 @@
-# 5.2. Navigation Widgets: Organizing Navigation in an Application
+# Navigation Widgets: Organizing Navigation in an Application
 
 In the previous section, we saw how to use Flutter's navigation system based on `Navigator` and routes (`MaterialPageRoute`). This mechanism allows us to move from one screen to another within the application by adding and removing routes from the navigation stack.
 

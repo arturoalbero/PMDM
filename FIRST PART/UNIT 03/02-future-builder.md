@@ -1,4 +1,4 @@
-# 2. Asynchronous Operations with FutureBuilder
+# Asynchronous Operations with FutureBuilder
 
 > **ACTIVITY:** Read the following text and experiment with the different examples in order to achieve knowledge and practical skills about the FutureBuilder.
 
