@@ -771,7 +771,7 @@ showDialog(
 
 And keeping in mind that any widget can fit inside the `child` component, such as an entire form.
 
-Let's look at it with a more complete example. Let's see how we would create a dialog with an adaptation of the form we covered in section 4.2 of this unit.
+Let's look at it with a more complete example. Let's see how we would create a dialog with an adaptation of a form.
 
 First, we invoke `showDialog` just as we have done so far:
 
