@@ -333,6 +333,15 @@ The official documentation provides more information about this widget, along wi
 - `NavigationRail` specification in the Material 3 documentation.
 - `NavigationRail` specification in the Flutter API documentation.
 
+
+<details>
+<summary>
+
+## The Drawer Component - OPTIONAL CONTENT
+
+
+</summary>
+
 ## The Drawer Component
 
 *Examples of Drawer. Source: m3.material.io*
@@ -517,8 +526,9 @@ You can find out how to do this in the official Flutter documentation, both in t
 - *Work with tabs* cookbook in the Flutter documentation.
 
 ---
+</details>
 
-5.3. Dialogs
+# Dialogs
 Material 3 documentation defines a dialog (also known as a dialog box) as a modal window that appears in front of app content to provide critical information or ask for a decision.
 
 ### Use of Dialogs
