@@ -4,7 +4,9 @@ En esta guía, repasaré de forma muy concisa las cosas más básicas de Flutter
 
 Es por ello que aquí vamos a hacer las cosas lo más rápido posible, siendo parcos en explicaciones (porque están en los apuntes principales) y yendo a lo más importante.
 
-## 1 Crea tu proyecto
+## 1 Introducción a los Widgets
+
+### 1.1 Crea tu proyecto
 
 Lo primero, después de haber instalado Flutter en tu sistema, es crear un proyecto. Para ello, podemos usar el menú interactivo de VS CODE.
 
@@ -100,7 +102,7 @@ En este caso concreto, la pantalla consta de un andamiaje (el Scaffold) donde se
 
 Para ejecutarlo, abre un terminal (que se abre por defecto en el root del proyecto) y escribe `flutter run`. Tendrás un bonito programa.
 
-## 2 AppBar y Botones
+### 1.2 AppBar y Botones
 
 A continuación, vamos a comentar el siguiente ejemplo, donde se ponen en uso la barra de aplicaciones (appBar) y un tipo de botón.
 
@@ -178,3 +180,111 @@ Después tenemos el body, que sigue siendo un texto, y un FloatingActionButton, 
 ```
 
 Podemos cambiar la acción por: `onPressed: ()=>print('action pushed')` y nos mostrará el texto en terminal. Esto no hay que hacerlo en aplicaciones en producción, pero nos puede ayudar a hacer pruebas.
+
+### 1.3 Stateful Widgets
+
+Los Stateful Widgets son aquellos que pueden almacenar información y se imprimen a sí mismos. Dicho de otro modo, aquellos que pueden cambiar lo que muestran.
+
+Para ello, tenemos que diferenciar el Widget del estado. Lo que se renderizará cada vez es el estado, y es ahí donde pondremos toda la lógica del Widget. 
+
+Podemos añadirle atributos y cambiarlos durante la ejecución, aunque deberemos usar la función intermediaria `setState()`.
+
+Veamos el código siguiente:
+
+```dart
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App Material',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'App Bar',
+          ),
+          
+          backgroundColor: Colors.amber,
+          leading: const Text('Here it is the leading part')
+        ),
+        body: Center(
+          child: Counter(),
+        ),
+      ),
+        
+      
+    );
+  }
+}
+
+class Counter extends StatefulWidget {
+  const Counter({super.key});
+
+  @override
+  State<Counter> createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(onPressed: ()=>setState(() {
+          counter += 1;
+        }), child: Icon(Icons.add),)
+      ],
+
+    );
+  }
+}
+```
+
+Ahora vamos a desglosar las partes diferentes. Lo que vamos a hacer es sustituir el Text de antes por una clase que hemos creado, el Counter. Aunque sea Stateful, a la hora de añadirla el proceso no cambia.
+
+Como vemos, para el Stateful Widget necesitamos el Widget en sí, que tiene el constructor y una función para crear el estado. Por convenio, el estado empieza con el caracter `_` y termina con la palabra `State`, siendo lo intermedio el nombre del Widget.
+
+```dart
+class Counter extends StatefulWidget {
+  const Counter({super.key});
+
+  @override
+  State<Counter> createState() => _CounterState();
+}
+```
+Es en el estado donde vamos a hacer el proceso de construir el Widget tal y como se ve. Le añadimos un atributo para almacenar información, en este caso un entero.
+
+Cuando lo construyamos, crearemos una columna Column. El Column en lugar de tener la propiedad child, tiene la propiedad children, que recibe una lista de Widgets, entre corchetes []. 
+
+Los widgets que añadimos es un texto, donde escribiremos el valor de la variable counter. Como va cambiando, el widget no puede ser const.
+
+El segundo widget es un elevated button, que nos obliga a usar un callback en el atributo onPressed:, donde pondremos una función anónima que llame al método `setState` para que actualice el valor del atributo counter. En el apartado child ponemos un widget de tipo Icon, y seleccionamos el icono que queremos de los iconos almacenados en el pseudo enumerador Icons (es en realidad una clase abstracta que almacena información, pero a nivel de cómo lo usamos se parece a un enumerador). Elegimos el icono Icons.add.
+
+```dart
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(onPressed: ()=>setState(() {
+          counter += 1;
+        }), child: Icon(Icons.add),)
+      ],
+
+    );
+  }
+}
+``` 
+
+## El Future Builder
+
+
+
