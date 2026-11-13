@@ -284,7 +284,7 @@ class _CounterState extends State<Counter> {
 }
 ``` 
 
-## El Future Builder
+## 2. El Future Builder
 
 El Future Builder sirve para poder usar Future dentro de los widgets. Esto es para evitar que la interfaz se bloquee, por ejemplo, al consultar una base de datos o realizar cualquier operación que no sea instantánea.
 
@@ -352,3 +352,68 @@ class _CounterState extends State<Counter> {
 
 En resumidas cuentas, lo que hace es retrasar la construcción del widget hasta que la función con el Future se resuelva. Es práctico para componentes dentro de una ventana, pero no para ventanas en sí mismas.
 
+## 3. Navigator
+
+Navigator es un widget que sirve para navegar por diferentes ventanas de nuestra aplicación. Utiliza los métodos push y pop para apilar ventanas y desapilarlas. Las ventanas son widgets que hemos creado.
+
+Navigator.push recibe como parámetros context, para saber el contexto de la aplicación, y un MaterialPageRoute, que es como MaterialApp, pero nos permite usar la navegación. 
+
+Navigator.pop solo recibe el contexto de la aplicación. Sólo se puede hacer pop si se ha hecho previamente push. Podemos comprobarlo mediante la función canPop o, si queremos hacerlo todo a la vez, mediante la función maybePop (que combina canPop y pop).
+
+Continuando con el ejemplo anterior, en la columna del contador vamos a añadir un botón para navegar a una nueva pantalla, que llamaremos Pantalla2:
+
+```dart
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            counter += 1;
+          }),
+          child: Icon(Icons.add),
+        ),
+        MyWidgetAsync(),
+        ElevatedButton( //AÑADIMOS UN ELEVATED BUTTON PARA LA NAVEGACIÓN
+          child: const Text('ir a otra pantalla'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Pantalla2()), 
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+
+De esta forma, al pulsar en el botón "ir a otra pantalla", viajaremos a la pantalla que hayamos definido en pantalla2, por ejemplo, esta:
+
+```dart
+class Pantalla2 extends StatelessWidget {
+  const Pantalla2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Column(
+        children: [
+          MyWidgetAsync(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.maybePop(context);
+            },
+            child: const Text("volver"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+Usamos el maybePop para ahorrarnos la comprobación del canPop. 
