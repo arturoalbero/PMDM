@@ -286,5 +286,69 @@ class _CounterState extends State<Counter> {
 
 ## El Future Builder
 
+El Future Builder sirve para poder usar Future dentro de los widgets. Esto es para evitar que la interfaz se bloquee, por ejemplo, al consultar una base de datos o realizar cualquier operación que no sea instantánea.
 
+```dart
+FutureBuilder(
+  future: Future,
+  initialData: InitialData,
+  builder: (BuildContext context, AsyncSnapshot snapshot){
+    return;
+  },
+),
+```
+
+En future ponemos la función que se ejecutará y ese valor pasará al builder a través de AsyncSnapshot. En este ejemplo se puede observar:
+
+```dart
+Future<String> asyncFunction(){
+  return Future.delayed(const Duration(seconds: 5),(){
+    return 'valor de retorno';
+  });
+}
+class MyWidgetAsync extends StatelessWidget{
+  const MyWidgetAsync({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: asyncFunction(), 
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        String text = "";
+        if(snapshot.hasData) text = snapshot.data.toString();
+        return Text(text);
+      }
+    );
+  }
+}
+```
+
+La función asíncrona, para simular un retraso, emplea Future.delayed durante 3 segundos. Entonces, cuando pasen esos 3 segundos se construirá el widget, con la información obtenida en dicha función. Para probarlo, podemos meter el widget en cualquier ventana, por ejemplo la del contador:
+```dart
+class Counter extends StatefulWidget {
+  const Counter({super.key});
+
+  @override
+  State<Counter> createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(onPressed: ()=>setState(() {
+          counter += 1;
+        }), child: Icon(Icons.add),),
+        MyWidgetAsync() ///<- LO METEMOS AQUÍ, COMO UN HIJO MÁS DE COLUMN>
+      ],
+
+    );
+  }
+}
+```
+
+En resumidas cuentas, lo que hace es retrasar la construcción del widget hasta que la función con el Future se resuelva. Es práctico para componentes dentro de una ventana, pero no para ventanas en sí mismas.
 
