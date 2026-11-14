@@ -355,6 +355,8 @@ En resumidas cuentas, lo que hace es retrasar la construcción del widget hasta 
 
 ## 3. Navigator
 
+### 3.1 Navegación básica con `Navigator`, `MaterialPageRoute`, `push`, `pop`, `canPop` y `maybePop`
+
 Navigator es un widget que sirve para navegar por diferentes ventanas de nuestra aplicación. Utiliza los métodos push y pop para apilar ventanas y desapilarlas. Las ventanas son widgets que hemos creado.
 
 Navigator.push recibe como parámetros context, para saber el contexto de la aplicación, y un MaterialPageRoute, que es como MaterialApp, pero nos permite usar la navegación. 
@@ -420,3 +422,90 @@ class Pantalla2 extends StatelessWidget {
 Usamos el maybePop para ahorrarnos la comprobación del canPop. 
 
 > **CURIOSIDAD:** Cuando viajamos a la segunda ventana, el texto aparece con una fuente extraña. Esta fuente se conoce como `_errorTextStyle` y `MaterialApp` lo coloca intencionalmente para advertirnos de que el texto se está mostrando sin emplear los widgets de texto adecuados, generalmente `Scaffold`. Podemos solventarlo modificando el parámetro `style` y eligiendo el que queramos pero, ¿es sabio no escuchar las advertencias de los creadores?
+
+## 3.2 Pasar argumentos entre pantallas
+
+Si queremos pasar argumentos entre pantallas, tenemos que diseñar las pantallas de tal forma que, en el constructor, reciban el argumento que queremos. Por ejemplo, vamos a modificar `pantalla2` para que reciba un valor entero, que será el del contador.
+
+```dart
+class Pantalla2 extends StatelessWidget {
+  final int? counterValue;
+  const Pantalla2({this.counterValue, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Column(
+        children: [
+          Text("El valor del contador es $counterValue"),
+          MyWidgetAsync(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.maybePop(context);
+            },
+            child: const Text("volver"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+Además de ver cómo añadimos el valor del contador como parámetro opcional con nombre, podemos observar que, mientras que el texto del botón `volver` está precedido por `const`, el texto que tiene la variable dentro no puede ser `const`. Además, al ser un valor opcional, si no añadimos nada cuando se construlla `Pantalla2`, seguirá funcionando igual. Por eso, hacemos esta modificación:
+
+```dart
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            counter += 1;
+          }),
+          child: Icon(Icons.add),
+        ),
+        MyWidgetAsync(),
+        ElevatedButton(
+          child: const Text('ir a otra pantalla'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Pantalla2(counterValue: counter,)),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+Así, veremos el valor de retorno. Después, al presionar volver, volveremos a la página anterior y el valor continuará presente. Esto sucede porque lo que hacemos es desapilar la página. Es decir, la primera pantalla nunca cambia. Si hiciéramos un push para volver, el valor no se mantendría porque al hacer push lo que hacemos es crear una nueva pantalla con un `key` distinto.
+
+## 3.3 Refactorizar. Separar las clases en archivos y organizarlas en carpetas. Arreglar imports.
+
+Aunque este apartado no pertenece a la navegación en sí, al ir creando nuevas pantallas en el archivo `main.dart` podemos observar como se nos queda un código desordenado y feo. La solución pasa por mover las diferentes pantallas a archivos separados y, es más, que esos archivos estén dentro de una carpeta `screens`. Yendo más lejos, se podrían meter esta carpeta en otra llamada `ui` (user interface), si aparte de las pantallas necesitamos otros elementos en la interfaz de usuario. 
+
+Así pues, dentro de la carpeta `lib`, vamos a crear una carpeta `screens`. Una vez hecho esto, seleccionamos los diferentes elementos, hacemos click derecho y pulsamos refactorizar.
+
+![alt text](image-5.png)
+
+Eso nos permite convertirlo en un StatefulWidget sin hacer nada, si es Stateless, y después, seleccionando el resultado, moverlas a un archivo aparte. Al moverlas así, la importación se pondrá de forma automática.  
+
+![alt text](image-6.png)
+![alt text](image-7.png)
+
+Ahora bien, podemos hacerlo también de forma manual. Vamos a mover `Pantalla2` a su propio archivo. El nombre del archivo tiene que estar en snake_case, es decir, minúsculas y guiones bajos separando palabras. Así, el nuestro se llamará `pantalla_2.dart`.
+![alt text](image-8.png)
+
+Una vez creado, copiamos el código de la pantalla_2 dentro y lo quitamos del archivo `main.dart`. Usa la instrucción `cortar`. Ahora necesitamos arreglar los imports. Lo primero es añadir el import de material.
+
+![alt text](image-9.png)
+
+Ahora veremos que no tiene acceso a `MyWidgetAsync()`. Esta función es parte de las pantallas, pero no es una pantalla. Podemos crear su propio paquete `utils` dentro de screens y copiarlo ahí. Requerirá importar `material.dart` también.
+
+![alt text](image-10.png)
+
+Ahora sí, podemos ir a aquellos archivos que usaran `MyWidgetAsync` e importar el archivo  `my_widget_async.dart`. Corregimos las importaciones, borrando las que no necesitemos y añadiendo las que falten, y tendremos el proyecto libre de errores y ordenador. Ejecutamos `flutter run` de nuevo para comprobar que todo funciona.
