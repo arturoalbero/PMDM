@@ -532,8 +532,179 @@ Ahora sí, podemos ir a aquellos archivos que usaran `MyWidgetAsync` e importar 
 
 ### 3.4 Trabajar con formularios y `TextField`
 
+Un `TextField` es un tipo de entrada muy usada en formularios. En ella, puedes escribir texto y dicha información puede viajar, como hemos visto en el punto anterior, por toda la aplicación. Sin embargo, para funcionar, un `TextField` necesita un tipo de variable especial, un controlador (en este caso `TextEditingControler`) donde se almacene la información.
+
+Podemos reutilizar nuestro counter y nuestra pantalla 2. Vamos a cambiar `Pantalla2` para que admita un parámetro más. Aparte, cuando se muestre el texto añadirá el nombre que le pasemos o `nadie`, si no le pasamos nada:
+
+```dart
+class Pantalla2 extends StatelessWidget {
+  final int? counterValue;
+  final String? name;
+  const Pantalla2({this.counterValue, this.name, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Column(
+        children: [
+          Text("El valor del contador es $counterValue y quien lo ha pulsado es ${name ?? 'nadie'}"),
+          MyWidgetAsync(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.maybePop(context);
+            },
+            child: const Text("volver"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+Una vez hecho esto, en el contador podemos añadir el TextField con su controlador (y una etiqueta en forma de texto para indicar al usuario lo que debe poner en el TextField). Para enviar el texto del controlador a la pantalla 2, tenemos que enviarle su propiedad text. En este caso, verás `_controller.text`.
+
+```dart
+class Counter extends StatefulWidget {
+  const Counter({super.key});
+
+  @override
+  State<Counter> createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int counter = 0;
+  final TextEditingController _controller = TextEditingController(); //<- AQUÍ CREAMOS EL CONTROLLER
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Contador = $counter"),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            counter += 1;
+          }),
+          child: Icon(Icons.add),
+        ),
+        MyWidgetAsync(),
+        const Text("Pon tu nombre:"),
+        TextField(controller: _controller), // <-AQUÍ CREAMOS EL TEXFIELD Y LE ASIGNAMOS EL CONTROLLER>
+        ElevatedButton(
+          child: const Text('ir a otra pantalla'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    Pantalla2(counterValue: counter, name: _controller.text), //AQUÍ LE MANDAMOS EL TEXTO DEL CONTROLLER A LA PANTALLA 2
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+Lo único que trabajar así con un TextField es rudimentario por una cuestión estética. Debes encontrar tu toque personal empleando los diferentes tipos de contenedores disponibles en Flutter. Sin embargo, aunque inevitablemente tenemos que usar alguno (como Center, Column, etc), ese campo pertenece más al diseño de interfaces que a la programación multimedia en sí misma.
+
 ### 3.5 Trabajar con valores de retorno
 
+También podemos enviar valores con la instrucción `pop` de vuelta a la pantalla anterior. Sin embargo, esto hace que tengamos que cambiar un poco la manera de trabajar. Ya que al refactorizar convertimos la pantalla My_app en un widget con estado, vamos a aprovechar eso para que podamos cambiar en una tercera pantalla el texto que sale donde poníamos `Here is the leading part`. Ese texto pasará dejar de ser const.
+
+Hacer que esto funcione bien es un proceso complejo. Lo primero, y más fácil, es crear la pantalla a la que vamos a ir:
+
+```dart
+class Pantalla3 extends StatefulWidget{
+  const Pantalla3({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _Pantalla3State();
+
+}
+class _Pantalla3State extends State<Pantalla3>{
+  final TextEditingController _controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return 
+      Scaffold(
+        body: Column(
+          children: [
+            Text("Introduce un texto"),
+            TextField(controller: _controller,),
+            ElevatedButton(onPressed: ()=>Navigator.pop(context, _controller.text), child: const Text("Volver"))
+
+          ],
+        ),
+      );
+  } 
+}
+```
+En el método `pop` añadimos el valor que obtenemos del `TextField`.
+
+Ahora empieza lo complejo. En mi app, en su estado creamos una función asíncrona que nos permita la navegación y que, una vez concluida (por eso tiene que ser asíncrona), cambie el estado y edite el valor de la cabecera. Para ello, añadimos una variable `cabecera` y la función mencionada:
+
+```dart
+class _MyAppState extends State<MyApp> {
+  String? cabecera;
+
+  Future<void> _irPantalla3(BuildContext context) async {
+    final String? respuesta = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Pantalla3()),
+    );
+    setState(() => cabecera = respuesta);
+  }
+```
+La función, al final, realiza un `setState()` que es lo que va a hacer que el Widget se vuelva a pintar y veamos el texto de cabecera obtenido en `Pantalla3`. 
+
+Ahora bien, tenemos un problema con el contexto (BuildContext). El contexto que recibimos en el método build() de _MyAppState pertenece a MyApp, que está por encima de MaterialApp. Por tanto, no puede encontrar el Navigator que crea MaterialApp.
+
+Para solucionarlo podemos utilizar un widget llamado Builder. Este widget crea un nuevo contexto dentro del árbol de widgets, concretamente por debajo de MaterialApp. Así, cuando llamamos a Navigator.push(), utilizamos un contexto que sí puede encontrar el Navigator.
+
+Simplemente, envolvemos el Scaffold en un Builder y ponemos el Scaffold como valor de retorno de la función anónima que requiere su propiedad builder.
+
+```dart
+ @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App Material',
+      home: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('App Bar'),
+
+              backgroundColor: Colors.amber,
+              leading: Text(cabecera ?? 'it is the leading part'),
+            ),
+            body: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () => _irPantalla3(context),
+                  child: const Text("introduce texto de cabecera"),
+                ),
+                Center(child: Counter()),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+```
+Observa que, simplemente, se ha copiado el código que había (añadiendo el botón que invoca la pantalla 3) dentro de `Builder(builder: (context) { return;})`, para que gestionara los contextos y se pudiera lanzar la pantalla. **Esto lo hemos tenido que hacer porque se trata de la pantalla principal, la que tiene el `MaterialApp`.**
+
+> **ACTIVIDAD:** Crea una pantalla que nos sirva para cambiar el color de la aplicación principal. Haz que tenga varios botones (al menos 2), cada uno con un color, y que al clicar en uno de ellos vuelva a la pantalla principal con dicho color.
+
+> **CURIOSIDAD:** Otra cosa que podemos hacer es mover los atributos del estado al widget y acceder a ellos a través de la propiedad `widget`.
+
 ## 4. Widgets de navegación y diálogos emergentes
+
+### 4.1 NavigationBar
+
+### 4.2 NavigationRail
+
+### 4.3 Diálogos (ventanas modales)
 
 ## 5. Navegación declarativa usando goRouter
