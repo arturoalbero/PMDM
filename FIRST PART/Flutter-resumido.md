@@ -312,18 +312,19 @@ class MyWidgetAsync extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: asyncFunction(), 
-      builder: (BuildContext context, AsyncSnapshot snapshot){
+      future: asyncFunction(),
+      initialData: "EN ESPERA",
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         String text = "";
-        if(snapshot.hasData) text = snapshot.data.toString();
+        if (snapshot.hasData) text = snapshot.data.toString();
         return Text(text);
-      }
+      },
     );
   }
 }
 ```
 
-La función asíncrona, para simular un retraso, emplea Future.delayed durante 3 segundos. Entonces, cuando pasen esos 3 segundos se construirá el widget, con la información obtenida en dicha función. Para probarlo, podemos meter el widget en cualquier ventana, por ejemplo la del contador:
+La función asíncrona, para simular un retraso, emplea Future.delayed durante 3 segundos. Entonces, cuando pasen esos 3 segundos se construirá el widget, con la información obtenida en dicha función. Mientras tanto, mostrará el valor de `initialData`. Para probarlo, podemos meter el widget en cualquier ventana, por ejemplo la del contador:
 ```dart
 class Counter extends StatefulWidget {
   const Counter({super.key});
@@ -417,3 +418,5 @@ class Pantalla2 extends StatelessWidget {
 }
 ```
 Usamos el maybePop para ahorrarnos la comprobación del canPop. 
+
+> **CURIOSIDAD:** Cuando viajamos a la segunda ventana, el texto aparece con una fuente extraña. Esta fuente se conoce como `_errorTextStyle` y `MaterialApp` lo coloca intencionalmente para advertirnos de que el texto se está mostrando sin emplear los widgets de texto adecuados, generalmente `Scaffold`. Podemos solventarlo modificando el parámetro `style` y eligiendo el que queramos pero, ¿es sabio no escuchar las advertencias de los creadores?
