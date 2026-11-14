@@ -102,6 +102,8 @@ En este caso concreto, la pantalla consta de un andamiaje (el Scaffold) donde se
 
 Para ejecutarlo, abre un terminal (que se abre por defecto en el root del proyecto) y escribe `flutter run`. Tendrás un bonito programa.
 
+> **ACTIVIDAD:** Prueba a crear tu propio programa. Prueba a meter en el body del Scaffold directamente el texto. Prueba otros widgets de posicionamiento como [Align](https://api.flutter.dev/flutter/widgets/Align-class.html) (que requiere usar `alignment: Alignment(double x, double y)` como parámetro con nombre, aparte de `child`)
+
 ### 1.2 AppBar y Botones
 
 A continuación, vamos a comentar el siguiente ejemplo, donde se ponen en uso la barra de aplicaciones (appBar) y un tipo de botón.
@@ -149,7 +151,9 @@ Widget build(BuildContext context) {
           ),
         ),
 ```
+
 ![App Bar](image-3.png)
+
 Podemos cambiar muchas más cosas, como podemos observar si dejamos el ratón sobre AppBar:
 ![Menú contextual de App Bar](image-4.png)
 
@@ -180,6 +184,8 @@ Después tenemos el body, que sigue siendo un texto, y un FloatingActionButton, 
 ```
 
 Podemos cambiar la acción por: `onPressed: ()=>print('action pushed')` y nos mostrará el texto en terminal. Esto no hay que hacerlo en aplicaciones en producción, pero nos puede ayudar a hacer pruebas.
+
+> **ACTIVIDAD:** Crea una Appbar con los diferentes elementos rellenados y mira a ver qué pasa.
 
 ### 1.3 Stateful Widgets
 
@@ -260,7 +266,7 @@ class Counter extends StatefulWidget {
 ```
 Es en el estado donde vamos a hacer el proceso de construir el Widget tal y como se ve. Le añadimos un atributo para almacenar información, en este caso un entero.
 
-Cuando lo construyamos, crearemos una columna Column. El Column en lugar de tener la propiedad child, tiene la propiedad children, que recibe una lista de Widgets, entre corchetes []. 
+Cuando lo construyamos, crearemos una columna `Column`. El Column en lugar de tener la propiedad child, tiene la propiedad children, que recibe una lista de Widgets, entre corchetes []. 
 
 Los widgets que añadimos es un texto, donde escribiremos el valor de la variable counter. Como va cambiando, el widget no puede ser const.
 
@@ -282,7 +288,9 @@ class _CounterState extends State<Counter> {
     );
   }
 }
-``` 
+```
+
+> **ACTIVIDAD:** Convierte la pantalla principal en StatefulWidget. Haz que cambie de color el fondo cuando cliques a un botón.
 
 ## 2. El Future Builder
 
@@ -352,6 +360,8 @@ class _CounterState extends State<Counter> {
 ```
 
 En resumidas cuentas, lo que hace es retrasar la construcción del widget hasta que la función con el Future se resuelva. Es práctico para componentes dentro de una ventana, pero no para ventanas en sí mismas.
+
+> **ACTIVIDAD:** Crea otro FutureBuilder. Haz que consulte la API  healthy (https://healthys-express-backend-production.up.railway.app/) y muestre los resultados en un Text. De forma opcional, puedes darle un formato bonito. Muestra lo que hay en un endpoint, por ejemplo /api/entrants. Consulta el apartado `http` del tema anterior.
 
 ## 3. Navigator
 
@@ -423,6 +433,8 @@ Usamos el maybePop para ahorrarnos la comprobación del canPop.
 
 > **CURIOSIDAD:** Cuando viajamos a la segunda ventana, el texto aparece con una fuente extraña. Esta fuente se conoce como `_errorTextStyle` y `MaterialApp` lo coloca intencionalmente para advertirnos de que el texto se está mostrando sin emplear los widgets de texto adecuados, generalmente `Scaffold`. Podemos solventarlo modificando el parámetro `style` y eligiendo el que queramos pero, ¿es sabio no escuchar las advertencias de los creadores?
 
+> **ACTIVIDAD:** ¿Recuerdas la consulta al endpoint en la actividad anterior? Pásalo a una pantalla nueva. Haz una pantalla por cada uno de los endpoints y navega de una a otra usando botones y la instrucción push. Implementa en todas las pantallas la instrucción pop para volver a la pantalla anterior. 
+
 ## 3.2 Pasar argumentos entre pantallas
 
 Si queremos pasar argumentos entre pantallas, tenemos que diseñar las pantallas de tal forma que, en el constructor, reciban el argumento que queremos. Por ejemplo, vamos a modificar `pantalla2` para que reciba un valor entero, que será el del contador.
@@ -484,6 +496,12 @@ class _CounterState extends State<Counter> {
 ```
 Así, veremos el valor de retorno. Después, al presionar volver, volveremos a la página anterior y el valor continuará presente. Esto sucede porque lo que hacemos es desapilar la página. Es decir, la primera pantalla nunca cambia. Si hiciéramos un push para volver, el valor no se mantendría porque al hacer push lo que hacemos es crear una nueva pantalla con un `key` distinto.
 
+> **ACTIVIDAD:** Recogiendo la actividad anterior, en lugar de tener una pantalla por cada endpoint del api, haz una sola pantalla que reciba como argumento el URI (`/api/entrants`, por ejemplo, es un URI). 
+>
+>Tendrás una sola pantalla, pero en la pantalla inicial tendrás tantos botones como endpoints, y todos ellos te llevarán a la pantalla, pero con un argumento distinto. 
+>
+>Impleméntalo para que funcione igual que el de la actividad anterior.
+
 ## 3.3 Refactorizar. Separar las clases en archivos y organizarlas en carpetas. Arreglar imports.
 
 Aunque este apartado no pertenece a la navegación en sí, al ir creando nuevas pantallas en el archivo `main.dart` podemos observar como se nos queda un código desordenado y feo. La solución pasa por mover las diferentes pantallas a archivos separados y, es más, que esos archivos estén dentro de una carpeta `screens`. Yendo más lejos, se podrían meter esta carpeta en otra llamada `ui` (user interface), si aparte de las pantallas necesitamos otros elementos en la interfaz de usuario. 
@@ -509,3 +527,13 @@ Ahora veremos que no tiene acceso a `MyWidgetAsync()`. Esta función es parte de
 ![alt text](image-10.png)
 
 Ahora sí, podemos ir a aquellos archivos que usaran `MyWidgetAsync` e importar el archivo  `my_widget_async.dart`. Corregimos las importaciones, borrando las que no necesitemos y añadiendo las que falten, y tendremos el proyecto libre de errores y ordenador. Ejecutamos `flutter run` de nuevo para comprobar que todo funciona.
+
+> **ACTIVIDAD:** Refactoriza tus actividades anteriores para que sigan funcionando bien. Guarda una captura de la organización de los ficheros.
+
+### 3.4 Trabajar con formularios y `TextField`
+
+### 3.5 Trabajar con valores de retorno
+
+## 4. Widgets de navegación y diálogos emergentes
+
+## 5. Navegación declarativa usando goRouter
