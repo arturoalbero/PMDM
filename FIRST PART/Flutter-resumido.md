@@ -924,3 +924,5 @@ go_router es un paquete mantenido por los desarrolladores de Flutter, aunque ten
 
 Para usarlo en nuestro proyecto, hay que usar `flutter pub add go_router`. Se añadirá a las dependencias y se descargará o bien al ejecutar el proyecto o bien de forma manual.
 
+## 6. Animaciones con Hero
+
