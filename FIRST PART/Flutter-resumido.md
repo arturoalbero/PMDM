@@ -920,9 +920,162 @@ Los apartados Simple Dialog, Dialog y Full-Screen Dialog son opcionales y están
 
 ## 5. Navegación declarativa usando goRouter
 
+### 5.1 Uso básico de go_router
+
 go_router es un paquete mantenido por los desarrolladores de Flutter, aunque tenemos que instalarlo como una librería externa. Nos permite crear un `API` para navegar por las diferentes ventanas de la aplicación. Es apropiado para aplicaciones grandes y complejas, mientras que el método visto anteriormente es menos laborioso y más adecuado para aplicaciones simples.
 
 Para usarlo en nuestro proyecto, hay que usar `flutter pub add go_router`. Se añadirá a las dependencias y se descargará o bien al ejecutar el proyecto o bien de forma manual.
+
+Para hacer demostrar como funciona go_router, crearemos un nuevo proyecto y añadiremos la dependencia.
+
+Creamos las tres pantallas como en el proyecto anterior:
+
+```dart
+import 'package:flutter/material.dart';
+
+class Screen1 extends StatelessWidget {
+
+const Screen1({ super.key });
+
+  @override
+  Widget build(BuildContext context){
+    return Text("Screen 1");
+  }
+}
+```
+Lo siguiente es crear el router, que lo podemos declarar en un archivo aparte. La versión más sencilla es la siguiente, indicando la ruta inicial y las diferentes rutas, todas ellas explícitas:
+
+```dart
+import 'package:go_router/go_router.dart';
+import 'package:go_router_tutorial/screens/screen_1.dart';
+import 'package:go_router_tutorial/screens/screen_2.dart';
+import 'package:go_router_tutorial/screens/screen_3.dart';
+
+final GoRouter router = GoRouter(
+  //DEFINIMOS LA RUTA INICIAL
+  initialLocation: "/s1",
+  routes: [
+    //DEFINIMOS LAS RUTAS
+    GoRoute(path: "/s1", builder: (context, state) => const Screen1()),
+    GoRoute(path: "/s2", builder: (context, state) => const Screen2()),
+    GoRoute(path: "/s3", builder: (context, state) => const Screen3())
+  ],
+);
+```
+Ya podemos añadir el router al main. Debemos importar el fichero del router y, en lugar de devolver MaterialApp, devolver MaterialApp.router(). Ya no puede ser `const`.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:go_router_tutorial/screens/app_router.dart';
+
+void main() {
+  runApp(const MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: "Tutorial",
+      routerConfig: appRouter,
+    );
+  }
+}
+```
+> **FÍJATE** que para importar un archivo, tenemos que poner el nombre del proyecto y luego la dirección tomando como `root` la carpeta `lib`.
+
+Ahora, para poder viajar de una a otra, necesitamos añadir botones que nos permitan hacerlo, con context.go o context.push. La diferencia es que la segunda permite hacer pop, mientras que la primera no. Por ejemplo, la primera ventana quedaría así:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class Screen1 extends StatelessWidget {
+  const Screen1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text("Screen 1"),
+        //AÑADIMOS BOTONES PARA VIAJAR A LAS DIFERENTES PANTALLAS
+        TextButton(
+          onPressed: () => {context.go("/s2")},
+          child: Text("To Screen 2"),
+        ),
+        TextButton(
+          onPressed: () => {context.go("/s3")},
+          child: Text("To Screen 3"),
+        ),
+      ],
+    );
+  }
+}
+```
+También podemos usar parámetros en las direcciones. Por ejemplo, si para acceder a cada pantalla queremos poner `screen/[número]`, simplemente tenemos que poner la dirección `screen/:number` donde `:number` se considerará un parámetro, accesible mediante el estado de GoRouter con `state.pathParameter`.
+```dart
+final GoRouter appRouter = GoRouter(
+  //DEFINIMOS LA RUTA INICIAL
+  initialLocation: "/s1",
+  routes: [
+    //DEFINIMOS LAS RUTAS
+    GoRoute(path: "/s1", builder: (context, state) => const Screen1()),
+    GoRoute(path: "/s2", builder: (context, state) => const Screen2()),
+    GoRoute(path: "/s3", builder: (context, state) => const Screen3()),
+    //AHORA RUTAS CON PARÁMETROS
+    GoRoute(path: "/screen/:number", builder:(context, state){
+      final String? number = state.pathParameters['number'];
+      switch(number){
+        case '1':
+          return Screen1();
+        case '2':
+          return Screen2();
+        case '3':
+          return Screen3();
+        default:
+          return Text("Pantalla no encontrada");
+      }
+    })
+  ],
+);
+```
+
+En la dirección podemos escribir `screen/1` o cualquier otra cosa. Si ponemos un valor que no sea 1, 2 o 3, simplemente pondrá `Pantalla no encontrada`. Las rutas las escribimos nosotros en el código, pero podríamos tener un textfield que recogiera un número y, al darle al botón, construyera de forma dinámica la dirección.
+
+Los parámetros no solamente sirven para construir direcciones, sino que se pueden usar como parámetros del constructor del Widget, para transferir información.
+
+> **ACTIVIDAD:** Haz un go_router para viajar a una pantalla con la dirección /Screen/:nombre. Haz que la pantalla muestre el valor del parámetro `nombre` en un Text centrado.
+
+## 5.2 Envolver pantallas usando ShellRoute
+
+Aquí ocurre que, al no haber usado `Scaffold`, nos da el estilo de texto error. Podríamos usar un `Scaffold` en cada una de ellas, o envolverlas en un ShellRoute dentro del router, para que compartan Scaffold.
+
+Dentro del apartado de `routes:` de GoRouter, creamos un shellroute:
+
+```dart
+routes: [
+    //CREAMOS UN SHELL ROUTE Y METEMOS LAS RUTAS DENTRO
+    ShellRoute(
+      routes: [
+        GoRoute(path: "/s1", builder: (context, state) => const Screen1()),
+        GoRoute(path: "/s2", builder: (context, state) => const Screen2()),
+        GoRoute(path: "/s3", builder: (context, state) => const Screen3()),
+      ],
+      //EN EL BUILDER, PONEMOS EL SCAFFOLD Y TODO LO QUE SEA COMÚN
+      builder: (context, state, child) {
+        return Scaffold(
+          //CHILD es el resultado del builder de la ruta elegida antes
+          body: child,
+        );
+      }, 
+    ),
+```
+
+De esta forma, podemos comprobar que si viajamos a `/s1` estaremos en una pantalla dentro de un Scaffold, mientras que en `/screen/1` estaremos en la misma pantalla, pero sin el Scaffold comúm.
+
+>**ACTIVIDAD:** Crea una aplicación sencilla con 4 pantallas. Haz que dos de ellas compartan un mismo Scaffold. Haz que las otras dos se elijan mediante un parámetro. Nómbralas Screen1, 2, 3 y 4.
 
 ## 6. Animaciones con Hero
 
