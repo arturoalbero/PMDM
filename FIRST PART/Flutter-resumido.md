@@ -657,11 +657,11 @@ class _MyAppState extends State<MyApp> {
 ```
 La función, al final, realiza un `setState()` que es lo que va a hacer que el Widget se vuelva a pintar y veamos el texto de cabecera obtenido en `Pantalla3`. 
 
-Ahora bien, tenemos un problema con el contexto (BuildContext). El contexto que recibimos en el método build() de _MyAppState pertenece a MyApp, que está por encima de MaterialApp. Por tanto, no puede encontrar el Navigator que crea MaterialApp.
+Ahora bien, tenemos un problema con el contexto (`BuildContext`). El contexto que recibimos en el método `build()` de `_MyAppState` pertenece a MyApp, que está por encima de `MaterialApp`. Por tanto, no puede encontrar el `Navigator` que crea `MaterialApp`.
 
-Para solucionarlo podemos utilizar un widget llamado Builder. Este widget crea un nuevo contexto dentro del árbol de widgets, concretamente por debajo de MaterialApp. Así, cuando llamamos a Navigator.push(), utilizamos un contexto que sí puede encontrar el Navigator.
+Para solucionarlo podemos utilizar un widget llamado Builder. Este widget crea un nuevo contexto dentro del árbol de widgets, concretamente por debajo de `MaterialApp`. Así, cuando llamamos a `Navigator.push()`, utilizamos un contexto que sí puede encontrar el `Navigator`.
 
-Simplemente, envolvemos el Scaffold en un Builder y ponemos el Scaffold como valor de retorno de la función anónima que requiere su propiedad builder.
+Simplemente, envolvemos el `Scaffold` en un `Builder` y ponemos el `Scaffold` como valor de retorno de la función anónima que requiere su propiedad `builder`.
 
 ```dart
  @override
@@ -701,10 +701,226 @@ Observa que, simplemente, se ha copiado el código que había (añadiendo el bot
 
 ## 4. Widgets de navegación y diálogos emergentes
 
+La navegación que hemos visto hasta ahora es una navegación directa, pero existen varias formas de organizarla y unificarla, a través de Widgets especializados. Además, también se puede realizar la navegación hacia ventanas modales, o diálogos.
+
 ### 4.1 NavigationBar
 
-### 4.2 NavigationRail
+`NavigationBar` es un widget para navegar por distintas ventanas que se suele colocar en la propiedad `bottomNavigationBar` de `Scaffold`. Sirve para que naveguemos por diferentes páginas manteniendo el mismo `Scaffold` en todas. Para poder probarlo, crearemos un proyecto nuevo con tres ventanas. En cada una de ellas, simplemente se verá un texto con el número de la página.
 
-### 4.3 Diálogos (ventanas modales)
+```dart
+class Screen3 extends StatelessWidget{
+  const Screen3({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    
+    return Text("3");
+  }
+}
+```
+
+Ahora bien, para hacer nuestra `NavigationBar` necesitamos que el Widget que contiene el `Scaffold` sea `StatefulWidget`. Puede ser el principal, con el `MaterialApp`, o uno específico. Para que funcione todo bien, necesitamos una propiedad en el estado que sea el índice seleccionado.
+
+```dart
+class MainApp extends StatefulWidget {
+  const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  int currentIndex = 0;
+```
+Al crear el `Scaffold`, lo primero que vamos a hacer es un appBar que cambie en función del índice seleccionado, usando para ello una lista y un índice que indique en qué sitio de la lista estamos.
+
+```dart
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: [
+            const Text("Screen 1"),
+            const Text("Screen 2"),
+            const Text("Screen 3"),
+          ][currentIndex],
+```
+Es decir, **lo que hay dentro de `title` no es una matriz de dos dimensiones, sino la definición de una lista y, después, la selección de qué elemento de la lista se visualiza**. 
+
+Lo siguiente es definir la propia barra de navegación. En la propiedad `bottomNavigationBar` colocamos la `NavigationBar`. Lo primero que definimos es qué sucede cuando pulsamos en uno de los destinos que definiremos luego. Para ello, usamos la función setState, que permite cambiar el valor del índice actual y que se redibuje el widget. Además, definimos cuál es el índice seleccionado (se corresponderá con la variable que alteramos en el estado).
+
+```dart
+bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentIndex = index;
+            });
+          },
+          selectedIndex: currentIndex,
+```
+Lo siguiente es definir los destinos. Igual que hemos hecho en la AppBar, vamos a crear una lista con las diferentes pantallas. Esto lo que hace es crear la barra de navegación, pero todavía no crea las diferentes pantallas.
+
+```dart
+destinations: const <Widget>[
+            NavigationDestination(
+              icon: Icon(Icons.people),
+              selectedIcon: Icon(Icons.people_outline),
+              label: "S1",
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.people),
+              selectedIcon: Icon(Icons.people_outline),
+              label: "S2",
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.people),
+              selectedIcon: Icon(Icons.people_outline),
+              label: "S3",
+            ),
+          ],
+        ),
+```
+Usamos dos tipos de iconos, uno para cuando el destino no está seleccionado y otro para cuando esté seleccionado. Además, le ponemos una etiqueta para clarificar.
+
+Para crear las pantallas, tenemos que utilizar, esta vez en el body del Scaffold, la misma técnica de crear una lista de widgets e indicar cuál es el que estará visible que usamos para la AppBar.
+
+```dart
+body: <Widget>[
+          Center(child: Screen1()),
+          Center(child: Screen2()),
+          Center(child: Screen3())
+        ][currentIndex]
+      ),
+    );
+  }
+}
+```
+Como se puede observar, no se trata de un proceso muy difícil, pero sí que es algo laborioso. Usando este tipo de navegación, la pantalla que cambiamos es, realmente, el body del Scaffold y no la pantalla entera. Muchas veces es, en realidad, lo que vamos a querer para nuestras aplicaciones.
+
+NavigationRail funciona de forma análoga. Mantiene el AppBar exactamente igual, pero toda la información de navegación se coloca en el `body` del `Scaffold`. En lugar de NavigationBar, utiliza el widget NavigationRail y en lugar de NavigationDestination, emplea el widget NavigationRailDestination. Para poder poner el NavigationRail y el contenido en sí mismo, se emplean dos filas a través del widget `Row` y su propiedad `children`.
+
+> **ACTIVIDAD:** Reproduce el ejemplo de las tres pantallas con NavigationBar y luego conviértelo a NavigationRail.
+
+### 4.2 Diálogos (ventanas modales)
+
+Un diálogo es una ventana modal que aparece en frente del contenido de la aplicación para proveer información crítica o solicitar una decisión.
+
+Disponemos de los siguientes tipos de diálogos:
+- `SnackBar`: Sirve para dar mensajes temporales.
+- `MaterialBanner`: Sirve para dar información persistente.
+- `Dialog`: Sirve para solicitar la acción o decisión del usuario.
+
+La clase base de Flutter para trabajar con diálogos es `Dialog`, aunque generalmente se usan clases derivadas como `AlertDialog` o `SimpleDialog`.
+
+La clase recibe como parámetros obligatorios `context` (el contexto de la aplicación) y `builder`(la ventana que vamos a mostrar), aunque tiene muchos otros parámetros opcionales que podemos consultar en la documentación.
+
+Para poner un ejemplo, vamos a crear en `Screen1` un botón que lance una alerta. Lo que hace cada parte se explica en el código.
+```dart
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text("Screen 1"),
+        // A PARTIR DE AQUÍ CREAMOS EL BOTÓN
+        ElevatedButton(
+          onPressed: (){
+            //SHOW DIALOG nos va a permitir mostrar el contenido, le pasamos context y el builder
+            showDialog(
+              context: context, 
+              //EL builder es una función que devuelve el tipo de diálogo, en este caso AlertDialog
+              builder: (context){
+                return AlertDialog(
+                  //Título, se pone en la parte superior de la ventana
+                  title: const Text("Mi alerta"),
+                  //Contenido, el texto que sale en la alerta
+                  content: const Text("Contenido"),
+                  //Las diferentes acciones de la alerta, en este caso crea un TextButton para salir 
+                  actions: [
+                    TextButton(
+                      onPressed: ()=>Navigator.pop(context), 
+                      child: const Text("Cancel")
+                    )
+                  ]
+                );
+              }
+            );
+          }, 
+          child: const Text("Lancemos una alerta")),
+      ],
+    );
+  }
+```
+
+Si quisiéramos capturar el contenido, deberíamos usar, como antes, un Future y también un StatefulWidget. Así pues, vamos a convertir la pantalla 2:
+
+```dart
+//Lo primero que hacemos es convertir en Stateful lo que teníamos, usando refactorizar
+class Screen2 extends StatefulWidget {
+  const Screen2({super.key});
+
+  @override
+  State<Screen2> createState() => _Screen2State();
+}
+
+class _Screen2State extends State<Screen2> {
+  //Añadimos la variable que vamos a modificar
+  String? valor;
+  
+  @override
+  Widget build(BuildContext context) {
+    
+    return Column(
+      children: [
+        const Text("2"),
+        //Este es el texto para mostrar el valor de la variable, o desconocido si es nulo
+        Text("El valor es ${valor ?? 'desconocido'}"),
+        //Creamos un elevated button que mostrará el diálogo como antes
+        ElevatedButton(
+          onPressed: () {
+            //Como recibe un valor, tenemos que declararlo como futuro. Lo de más, es igual
+            Future<String?> response = showDialog<String?>(
+              context: context,
+              builder: (context) {
+                //Necesitamos el controlador, lo podemos crear aquí o antes.
+                TextEditingController controller = TextEditingController();
+                //Devolvemos la alerta, como antes, pero esta vez en el contenido hay un TextField
+                return AlertDialog(
+                  title: const Text("Introduce tu nombre"),
+                  content: TextField(controller: controller),
+                  actions: [
+                    TextButton(
+                      //Ahora el pop devuelve el contenido del texto del controller
+                      onPressed: () => Navigator.pop(context, controller.text),
+                      child: const Text("Salir"),
+                    ),
+                  ],
+                );
+              },
+            );
+            //Tenemos que definir lo que pasa cuando se completa el proceso. Ahí ponemos el setState
+            response.then(
+              (v) => setState(() {
+                valor = v;
+              }),
+            );
+          },
+          child: const Text("Introducción de valores"),
+        ),
+      ],
+    );
+  }
+}
+```
+
+Los apartados Simple Dialog, Dialog y Full-Screen Dialog son opcionales y están representados en los apuntes principales.
+
+> **ACTIVIDAD:** En la tercera pantalla, crea un diálogo que te pida introducir un número y, una vez introducido, muestra en la pantalla si el número es par o no lo es (Por ejemplo, "32 es un número par" "13 no es un número par"). 
+
 
 ## 5. Navegación declarativa usando goRouter
+
+go_router es un paquete mantenido por los desarrolladores de Flutter, aunque tenemos que instalarlo como una librería externa. Nos permite crear un `API` para navegar por las diferentes ventanas de la aplicación. Es apropiado para aplicaciones grandes y complejas, mientras que el método visto anteriormente es menos laborioso y más adecuado para aplicaciones simples.
+
+Para usarlo en nuestro proyecto, hay que usar `flutter pub add go_router`. Se añadirá a las dependencias y se descargará o bien al ejecutar el proyecto o bien de forma manual.
+
