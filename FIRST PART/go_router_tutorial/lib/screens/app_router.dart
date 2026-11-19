@@ -4,9 +4,12 @@ import 'package:go_router_tutorial/screens/screen_1.dart';
 import 'package:go_router_tutorial/screens/screen_2.dart';
 import 'package:go_router_tutorial/screens/screen_3.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter appRouter = GoRouter(
   //DEFINIMOS LA RUTA INICIAL
   initialLocation: "/s1",
+  navigatorKey: navigatorKey,
   routes: [
     //DEFINIMOS LAS RUTAS
     ShellRoute(
@@ -16,10 +19,8 @@ final GoRouter appRouter = GoRouter(
         GoRoute(path: "/s3", builder: (context, state) => const Screen3()),
       ],
       builder: (context, state, child) {
-        return Scaffold(
-          body: child,
-        );
-      }, 
+        return Scaffold(body: child);
+      },
     ),
     //AHORA RUTAS CON PARÁMETROS
     GoRoute(

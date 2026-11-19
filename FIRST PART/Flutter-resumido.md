@@ -1077,5 +1077,3 @@ De esta forma, podemos comprobar que si viajamos a `/s1` estaremos en una pantal
 
 >**ACTIVIDAD:** Crea una aplicación sencilla con 4 pantallas. Haz que dos de ellas compartan un mismo Scaffold. Haz que las otras dos se elijan mediante un parámetro. Nómbralas Screen1, 2, 3 y 4.
 
-## 6. Animaciones con Hero
-
