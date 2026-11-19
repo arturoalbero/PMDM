@@ -10,18 +10,18 @@ Es por ello que aquí vamos a hacer las cosas lo más rápido posible, siendo pa
 
 Lo primero, después de haber instalado Flutter en tu sistema, es crear un proyecto. Para ello, podemos usar el menú interactivo de VS CODE.
 
-![Menú interactivo](image.png)
+![Menú interactivo](flutter-resumido-img/image.png)
 
 Elegimos el tipo de aplicación, le ponemos un nombre en snake_case y luego elegimos las plataformas de destino. Si es para hacer pruebas rápidas, elige web, tu sistema operativo y el sistema operativo de tu móvil. Cuantas menos elijas, más ligero irá el proyecto.
 
 Después, dale permisos a la carpeta para que se ejecute el script `flutter.create`.
-![Dando permisos](image-1.png) 
+![Dando permisos](flutter-resumido-img/image-1.png) 
 
 En la carpeta lib es donde vamos a meter todo nuestro código, pero el resto de carpetas son necesarias para que funcione el proyecto.
 
 Dentro de la carpeta lib podemos crear otras carpetas para tener el código más organizado.
 
-![Primer main](image-2.png)
+![Primer main](flutter-resumido-img/image-2.png)
 
 Este es el código que viene por defecto:
 
@@ -152,10 +152,10 @@ Widget build(BuildContext context) {
         ),
 ```
 
-![App Bar](image-3.png)
+![App Bar](flutter-resumido-img/image-3.png)
 
 Podemos cambiar muchas más cosas, como podemos observar si dejamos el ratón sobre AppBar:
-![Menú contextual de App Bar](image-4.png)
+![Menú contextual de App Bar](flutter-resumido-img/image-4.png)
 
 Por ejemplo, podemos hacer los siguientes cambios:
 ```dart
@@ -508,23 +508,23 @@ Aunque este apartado no pertenece a la navegación en sí, al ir creando nuevas 
 
 Así pues, dentro de la carpeta `lib`, vamos a crear una carpeta `screens`. Una vez hecho esto, seleccionamos los diferentes elementos, hacemos click derecho y pulsamos refactorizar.
 
-![alt text](image-5.png)
+![alt text](flutter-resumido-img/image-5.png)
 
 Eso nos permite convertirlo en un StatefulWidget sin hacer nada, si es Stateless, y después, seleccionando el resultado, moverlas a un archivo aparte. Al moverlas así, la importación se pondrá de forma automática.  
 
-![alt text](image-6.png)
-![alt text](image-7.png)
+![alt text](flutter-resumido-img/image-6.png)
+![alt text](flutter-resumido-img/image-7.png)
 
 Ahora bien, podemos hacerlo también de forma manual. Vamos a mover `Pantalla2` a su propio archivo. El nombre del archivo tiene que estar en snake_case, es decir, minúsculas y guiones bajos separando palabras. Así, el nuestro se llamará `pantalla_2.dart`.
-![alt text](image-8.png)
+![alt text](flutter-resumido-img/image-8.png)
 
 Una vez creado, copiamos el código de la pantalla_2 dentro y lo quitamos del archivo `main.dart`. Usa la instrucción `cortar`. Ahora necesitamos arreglar los imports. Lo primero es añadir el import de material.
 
-![alt text](image-9.png)
+![alt text](flutter-resumido-img/image-9.png)
 
 Ahora veremos que no tiene acceso a `MyWidgetAsync()`. Esta función es parte de las pantallas, pero no es una pantalla. Podemos crear su propio paquete `utils` dentro de screens y copiarlo ahí. Requerirá importar `material.dart` también.
 
-![alt text](image-10.png)
+![alt text](flutter-resumido-img/image-10.png)
 
 Ahora sí, podemos ir a aquellos archivos que usaran `MyWidgetAsync` e importar el archivo  `my_widget_async.dart`. Corregimos las importaciones, borrando las que no necesitemos y añadiendo las que falten, y tendremos el proyecto libre de errores y ordenador. Ejecutamos `flutter run` de nuevo para comprobar que todo funciona.
 
