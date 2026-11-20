@@ -292,7 +292,10 @@ Luego simplemente añadimos el widget `NameForm` a nuestra aplicación y ya lo p
 
 ### 3.3 Providers y datos asíncronos
 
-> **ACTIVIDAD:**
+Provider también puede usarse de forma asíncrona como alternativa a `FutureBuilder`. Usaremos `FutureBuilder` cuando los datos asíncronos afecten solamente al widget en sí mismo, y `AsyncNotifier` cuando los datos sean compartidos entre varios widgets de la aplicación.
+
+
+> **ACTIVIDAD:** Haz una aplicación con dos ventanas. En una haz que se conecte a la API healthys con la que hemos trabajado y que puedas escribir en un textfield el endpoint al que queremos conectarnos. Si escribes un endpoint incorrecto, que devuelva error. Si escribes un endpoint correcto, que guarde la información. Dicha información se verá en la otra ventana. Usa AsyncNotifier.
 
 ## 4. Persistencia
 
