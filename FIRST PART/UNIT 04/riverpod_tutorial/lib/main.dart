@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_tutorial/user_name_notifier.dart';
 
 void main() {
   runApp(ProviderScope(child: const MainApp()));
@@ -52,10 +53,11 @@ class CounterText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     //COUNT vigila los cambios en el provider
     final count = ref.watch(counterProvider);
+    final name = ref.watch(userNameProvider);
 
     return Column(
       children: [
-        Text('Counter: $count'),
+        Text('Counter: $count con nombre ${(name!="")?name:"desconocido"}'),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -70,6 +72,7 @@ class CounterText extends ConsumerWidget {
             ),
           ],
         ),
+        NameForm()
       ],
     );
   }

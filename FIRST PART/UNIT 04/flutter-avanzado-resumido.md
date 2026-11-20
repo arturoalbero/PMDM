@@ -220,9 +220,77 @@ class MainApp extends StatelessWidget {
 
 De esta forma, podemos controlar estados más complejos de forma sencilla. La regla es crear un Provider para almacenar los estados, un Notifier con dicho Provider y el tipo de dato que almacena, y un Consumer para mostrar los cambios.
 
-> **ACTIVIDAD:** Crea una aplicación con tres pantallas, en la segunda puedes introducir un texto con un text field y en la tercera tienes un contador. En la primera, debe aparecer tanto el resultado del conteo como el texto introducido. Usa Riverpod.
+### 3.2 ConsumerStatefulWidget
 
-### 3.2 Providers y datos asíncronos
+ConsumerStatefulWidget combina los estados de Riverpod (que son globales a toda la aplicación) con los estados normales (que son propios del Widget y no se comparten con otros).
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+//Definimos un notificador de Strings
+class UserNameNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+
+  void changeName(String name) {
+    state = name;
+  }
+}
+
+//Creamos su provider como antes
+final userNameProvider = NotifierProvider<UserNameNotifier, String>(
+  UserNameNotifier.new,
+);
+
+//Creamos el Consumer, pero esta vez como StatefulWidget
+
+class NameForm extends ConsumerStatefulWidget {
+  const NameForm({super.key});
+  //En lugar de un State, va a tener un ConsumerState
+  @override
+  ConsumerState<NameForm> createState() => _NameFormState();
+}
+
+// CREAMOS LA CLASE DEL ESTADO
+// Esta clase ya incorpora ref como propiedad heredada, así que no la necesitamos en el build.
+
+class _NameFormState extends ConsumerState<NameForm> {
+  final _nameController = TextEditingController();
+
+  //dispose sirve para liberar recursos, se ejecuta cuando el widget se elimina
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(controller: _nameController,),
+        FilledButton(
+          onPressed: () {
+            // Podemos usar la propiedad ref porque está heredada
+            //En este caso, leemos el providery luego cambiamos el nombre
+            ref
+                .read(userNameProvider.notifier)
+                .changeName(_nameController.text.trim());
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+Luego simplemente añadimos el widget `NameForm` a nuestra aplicación y ya lo podemos usar.
+
+> **ACTIVIDAD:** Crea una aplicación con tres pantallas, en la segunda puedes introducir un texto con un text field y en la tercera tienes un contador. En la primera, debe aparecer tanto el resultado del conteo como el texto introducido. Usa Riverpod y los dos tipos de consumer que hemos visto.
+
+### 3.3 Providers y datos asíncronos
 
 > **ACTIVIDAD:**
 
