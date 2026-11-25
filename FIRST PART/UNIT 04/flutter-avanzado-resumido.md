@@ -101,6 +101,7 @@ void main() {
 ```
 
 Podemos hacerlo fácilmente usando la herramienta de refactorización y eligiendo `wrap with widget...`. Luego sustituimos widget por `ProviderScope`.
+
 ![alt text](image.png)
 
 Para poder trabajar dentro, usaremos `Provider` que serán consumidos por `ConsumerWidget`.
