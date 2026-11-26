@@ -55,6 +55,9 @@ class CounterText extends ConsumerWidget {
     final count = ref.watch(counterProvider);
     final name = ref.watch(userNameProvider);
 
+    //ASYNC PROVIDER => provider asíncrono
+    final userAsyncState = ref.watch(userProviderAsync);
+
     return Column(
       children: [
         Text('Counter: $count con nombre ${(name!="")?name:"desconocido"}'),
@@ -70,9 +73,20 @@ class CounterText extends ConsumerWidget {
               onPressed: () => ref.read(counterProvider.notifier).decrement(),
               child: Text("-"),
             ),
+            
           ],
         ),
-        NameForm()
+        NameForm(),
+        Divider(),
+        //ASYNC PROVIDER => colocamos la variable con el método when en lugar de un widget normal
+        userAsyncState.when(
+          //EL DATO QUE RECIBIMOS FINALMENTE
+          data: (asyncDataReceived)=> Text(asyncDataReceived),
+          //LO QUE SE VISUALIZA EN CASO DE ERROR 
+          error: (error, stackTrace) => Text("Error: $error - $stackTrace"),
+          //LO QUE SE VISUALIZA MIENTRAS NO TENEMOS EL DATO
+          loading: ()=> Text("En espera")
+          )
       ],
     );
   }

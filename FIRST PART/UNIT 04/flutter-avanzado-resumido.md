@@ -1,4 +1,4 @@
-# Manejo de estados
+# MANEJO DE ESTADOS
 
 ## 1. Mecanismos para el cambio de estado en Flutter
 
@@ -293,12 +293,112 @@ Luego simplemente añadimos el widget `NameForm` a nuestra aplicación y ya lo p
 
 ### 3.3 Providers y datos asíncronos
 
-Provider también puede usarse de forma asíncrona como alternativa a `FutureBuilder`. Usaremos `FutureBuilder` cuando los datos asíncronos afecten solamente al widget en sí mismo, y `AsyncNotifier` cuando los datos sean compartidos entre varios widgets de la aplicación.
+Provider también puede usarse de forma asíncrona como alternativa a `FutureBuilder`. Usaremos `FutureBuilder` cuando los datos asíncronos afecten solamente al widget en sí mismo, y `AsyncNotifier` cuando los datos sean compartidos entre varios widgets de la aplicación. Nos puede servir para gestionar cosas tan diversas como:
 
+- Obtener una lista de usuarios o datos desde una API.
+- Cargar productos de una base de datos.
+- Gestionar un login.
+- Crear, editar o eliminar elementos.
+- Recargar datos después de realizar una operación.
+
+El uso es muy sencillo y muy similar a lo que hemos visto hasta ahora. Lo primero es crear un Notifier, pero asíncrono. Se crea igual que el Notifier normal, pero cambian los tipos de datos. Podemos añadirle, igual que antes, funciones que podríamos querer usar.
+
+```dart
+class UserAsyncNotifier extends AsyncNotifier<String>{
+  //función de construcción principal, simulamos un retraso con delayed
+  @override
+  FutureOr<String> build() async {
+    await Future.delayed(const Duration(seconds: 4));
+    return 'Dato con retraso';
+  }
+
+  //Función que añadimos para poder cambiar el estado interno
+  void changeName(String n){
+    state = AsyncData(n);
+  }
+  
+}
+```
+> `FutureOr` es un tipo de unión en Dart que representa valores que pueden ser de un tipo específico (T) o una Future de ese mismo tipo. Su propósito principal es permitir que las funciones o callbacks acepten tanto resultados síncronos como asíncronos, evitando la necesidad de envolver valores inmediatos en una Future innecesaria.
+
+Una vez hecho el Notifier, creamos el provider que se de forma análoga al normal, pero usando sus variantes asíncronas:
+
+```dart
+final userProviderAsync = AsyncNotifierProvider<UserAsyncNotifier, String>(UserAsyncNotifier.new);
+```
+
+Ahora bien, donde sí que cambia el uso es cuando lo queremos consumir. Para poder consumirlo, debemos crear una variable en el método `build` del consumer, como hacíamos de forma normal. Esa variable usará `ref.watch()` sobre el provider asíncrono.
+
+Esa variable tiene un método `when()` que nos permite devolver un widget distinto según los tres estados que puede tener una variable asíncrona: `en espera`, `error` y `finalizado`. Por lo tanto, en lugar de colocar un Widget, colocamos la variable con el método when y dentro funciones anónimas que creen los diferentes widgets según la ocasión:
+
+```dart
+userAsyncState.when(
+        
+  //EL DATO QUE RECIBIMOS FINALMENTE
+  data: (asyncDataReceived)=> Text(asyncDataReceived),
+  //LO QUE SE VISUALIZA EN CASO DE ERROR 
+  error: (error, stackTrace) => Text("Error: $error - $stackTrace"),
+  //LO QUE SE VISUALIZA MIENTRAS NO TENEMOS EL DATO
+  loading: ()=> Text("En espera")
+)
+```
+
+Observa el ConsumerWidget entero, para verlo en contexto:
+
+```dart
+//Creamos el consumer
+class CounterText extends ConsumerWidget {
+  const CounterText({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    //COUNT vigila los cambios en el provider
+    final count = ref.watch(counterProvider);
+    final name = ref.watch(userNameProvider);
+
+    //ASYNC PROVIDER => provider asíncrono
+    final userAsyncState = ref.watch(userProviderAsync);
+
+    return Column(
+      children: [
+        Text('Counter: $count con nombre ${(name!="")?name:"desconocido"}'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              //read nos permite leer el notifier de counterProvider y usar sus métodos
+              onPressed: () => ref.read(counterProvider.notifier).increment(),
+              child: Text("+"),
+            ),
+            ElevatedButton(
+              onPressed: () => ref.read(counterProvider.notifier).decrement(),
+              child: Text("-"),
+            ),
+            
+          ],
+        ),
+        NameForm(),
+        Divider(),
+        //ASYNC PROVIDER => colocamos la variable con el método when en lugar de un widget normal
+        userAsyncState.when(
+          //EL DATO QUE RECIBIMOS FINALMENTE
+          data: (asyncDataReceived)=> Text(asyncDataReceived),
+          //LO QUE SE VISUALIZA EN CASO DE ERROR 
+          error: (error, stackTrace) => Text("Error: $error - $stackTrace"),
+          //LO QUE SE VISUALIZA MIENTRAS NO TENEMOS EL DATO
+          loading: ()=> Text("En espera")
+          )
+      ],
+    );
+  }
+}
+```
 
 > **ACTIVIDAD:** Haz una aplicación con dos ventanas. En una haz que se conecte a la API healthys con la que hemos trabajado y que puedas escribir en un textfield el endpoint al que queremos conectarnos. Si escribes un endpoint incorrecto, que devuelva error. Si escribes un endpoint correcto, que guarde la información. Dicha información se verá en la otra ventana. Usa AsyncNotifier.
 
-## 4. Persistencia
+----
+
+# PERSISTENCIA
 
 ### 4.1 Uso de shared_preferences
 

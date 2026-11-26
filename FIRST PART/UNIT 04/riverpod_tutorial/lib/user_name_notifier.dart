@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -57,3 +59,22 @@ class _NameFormState extends ConsumerState<NameForm> {
     );
   }
 }
+
+//COSAS ASYNC
+
+class UserAsyncNotifier extends AsyncNotifier<String>{
+  //función de construcción principal, simulamos un retraso con delayed
+  @override
+  FutureOr<String> build() async {
+    await Future.delayed(const Duration(seconds: 4));
+    return 'Dato con retraso';
+  }
+
+  //Función que añadimos para poder cambiar el estado interno
+  void changeName(String n){
+    state = AsyncData(n);
+  }
+  
+}
+
+final userProviderAsync = AsyncNotifierProvider<UserAsyncNotifier, String>(UserAsyncNotifier.new);
